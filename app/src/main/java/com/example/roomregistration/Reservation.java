@@ -9,13 +9,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Reservation implements Serializable {
+public class Reservation implements Serializable, Comparable<Reservation> {
     @SerializedName("id")
     private int id;
     @SerializedName("fromTime")
-    private int fromTime;
+    private long fromTime;
     @SerializedName("toTime")
-    private int toTime;
+    private long toTime;
     @SerializedName("userId")
     private String userId;
     @SerializedName("purpose")
@@ -29,7 +29,7 @@ public class Reservation implements Serializable {
     public Reservation() {
     }
 
-    public Reservation(int id, int fromTime, int toTime, String userId, String purpose, int roomId) {
+    public Reservation(int id, long fromTime, long toTime, String userId, String purpose, int roomId) {
         this.id = id;
         this.fromTime = fromTime;
         this.toTime = toTime;
@@ -64,7 +64,7 @@ public class Reservation implements Serializable {
         return id;
     }
 
-    public int gettoTime() {
+    public long gettoTime() {
         return toTime;
     }
 
@@ -72,7 +72,7 @@ public class Reservation implements Serializable {
         return roomId;
     }
 
-    public int getfromTime() {
+    public long getfromTime() {
         return fromTime;
     }
 
@@ -85,6 +85,12 @@ public class Reservation implements Serializable {
     public Date getFromDate() { return new Date(getfromTime() * 1000); }
 
     public Date getToDate() { return new Date(gettoTime() * 1000); }
+
+    @Override
+    public int compareTo(Reservation reservation) {
+        return (this.gettoTime() < reservation.gettoTime() ? -1 :
+                (this.gettoTime() == reservation.gettoTime() ? 0 : 1));
+    }
 
     @NonNull
     @Override

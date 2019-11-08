@@ -81,8 +81,9 @@ public class RoomOverviewActivity extends AppCompatActivity implements GestureDe
     private void populateList(String jsonString) {
         Gson gson = new GsonBuilder().create();
         Log.d("ROA", jsonString);
-        final Room[] rooms = gson.fromJson(jsonString, Room[].class);
+        Room[] rooms = gson.fromJson(jsonString, Room[].class);
         ListView listView = findViewById(R.id.main_rooms_listview);
+
         ArrayAdapter<Room> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, rooms);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

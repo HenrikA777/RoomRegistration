@@ -20,6 +20,10 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -91,7 +95,13 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
     private void populateList(String jsonString) {
         Gson gson = new GsonBuilder().create();
         Log.d("ROA", jsonString);
-        final Reservation[] reservations = gson.fromJson(jsonString, Reservation[].class);
+        Reservation[] tempReservations = gson.fromJson(jsonString, Reservation[].class);
+        ArrayList<Reservation> reservations = new ArrayList<Reservation>(Arrays.asList(tempReservations));
+        Collections.sort(reservations, new Comparator<Reservation>() {
+            public int compare(Reservation o1, Reservation o2) {
+                return o1.compareTo(o2);
+            }
+        });
         ListView listView = findViewById(R.id.listviewReservations);
         ArrayAdapter<Reservation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, reservations);
         listView.setAdapter(adapter);
