@@ -3,6 +3,8 @@ package com.example.roomregistration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +25,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
-        implements View.OnClickListener{
+        implements View.OnClickListener, GestureDetector.OnGestureListener{
     private final String TAG = "FB_SIGNIN";
+    private GestureDetector gestureDetector;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        gestureDetector = new GestureDetector(this, this);
 
         // Click handlers and view item references
         findViewById(R.id.btnCreate).setOnClickListener(this);
@@ -94,7 +98,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.btnNext:
-                roomOverview(v);
+                roomOverview();
                 break;
         }
     }
@@ -212,9 +216,51 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
-    public void roomOverview(View v) {
+    public void roomOverview() {
         Intent i = new Intent(MainActivity.this, RoomOverviewActivity.class);
         //i.putStringArrayListExtra("logArray", log);
         MainActivity.this.startActivity(i);
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (this.gestureDetector.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+        boolean rightSwipe = event1.getX() > event2.getX();
+        if (rightSwipe) {
+            roomOverview();
+        }
+        else {
+            return true;
+        }
+        return true; // done
+    }
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
     }
 }
