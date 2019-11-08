@@ -97,6 +97,7 @@ public class RoomOverviewActivity extends AppCompatActivity implements GestureDe
             }
         });
     }
+    // region implements gestureDetector
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (this.gestureDetector.onTouchEvent(event)) {
@@ -141,5 +142,5 @@ public class RoomOverviewActivity extends AppCompatActivity implements GestureDe
     public void onLongPress(MotionEvent motionEvent) {
 
     }
-
+    // endregion implements gestureDetector
 }

@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity
         //i.putStringArrayListExtra("logArray", log);
         MainActivity.this.startActivity(i);
     }
+    // region implements gestureDetector
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (this.gestureDetector.onTouchEvent(event)) {
@@ -263,4 +264,5 @@ public class MainActivity extends AppCompatActivity
     public void onLongPress(MotionEvent motionEvent) {
 
     }
+    // endregion implements gestureDetector
 }

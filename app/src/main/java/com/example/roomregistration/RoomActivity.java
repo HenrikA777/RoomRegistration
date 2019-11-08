@@ -3,6 +3,8 @@ package com.example.roomregistration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,15 +27,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends AppCompatActivity implements GestureDetector.OnGestureListener{
     public static final String BASE_URI = "http://anbo-roomreservationv3.azurewebsites.net/api/reservations/room/";
     public static final String ROOM = "ROOM";
     private Room room;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        gestureDetector = new GestureDetector(this, this);
 
         Intent intent = getIntent();
         room = (Room) intent.getSerializableExtra(ROOM);
@@ -105,4 +109,50 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
     }
+    // region implements gestureDetector
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (this.gestureDetector.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+        boolean rightSwipe = event1.getX() > event2.getX();
+        if (rightSwipe) {
+            return true;
+        }
+        else {
+            Intent i = new Intent(RoomActivity.this, MainActivity.class);
+            //i.putStringArrayListExtra("logArray", log);
+            RoomActivity.this.startActivity(i);
+        }
+        return true; // done
+    }
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+    // endregion implements gestureDetector
 }
