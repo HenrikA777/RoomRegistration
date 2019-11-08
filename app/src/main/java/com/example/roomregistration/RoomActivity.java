@@ -119,6 +119,11 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
             }
         });
     }
+    public void addReservation(View view) {
+        Intent intent = new Intent(this, AddReservationActivity.class);
+        intent.putExtra(ROOM, room);
+        startActivity(intent);
+    }
     // region implements gestureDetector
     @Override
     public boolean onTouchEvent(MotionEvent event) {
