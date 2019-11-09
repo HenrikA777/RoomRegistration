@@ -13,7 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,6 +39,8 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
     public static final String ROOM = "ROOM";
     private Room room;
     private GestureDetector gestureDetector;
+    private boolean delete = false;
+    private FloatingActionButton delfab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +50,25 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
 
         Intent intent = getIntent();
         room = (Room) intent.getSerializableExtra(ROOM);
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        delfab = (FloatingActionButton)findViewById(R.id.delfab);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            fab.hide();
+            delfab.hide();
+        }
 
         TextView roomLabelTxtView = findViewById(R.id.txtRoomLabel);
         roomLabelTxtView.setText(room.toString());
         getDataUsingOkHttpEnqueue();
+    }
+    private void setDelete(View v) {
+        delete = !delete;
+        if (delete) {
+            delfab.setImageDrawable(ContextCompat.getDrawable(this, android.R.drawable.ic_menu_delete));
+        }
+        else {
+            delfab.setImageDrawable(ContextCompat.getDrawable(this, android.R.drawable.ic_delete));
+        }
     }
 
     private void getDataUsingOkHttpEnqueue() {
@@ -110,12 +130,10 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(RoomActivity.this, "Reservation clicked: "+parent.getItemAtPosition(position), Toast.LENGTH_SHORT)
                         .show();
-                /*
-                Intent intent = new Intent(getBaseContext(), RoomActivity.class);
-                Room room = (Room) parent.getItemAtPosition(position);
-                intent.putExtra(RoomActivity.ROOM, room);
-                startActivity(intent);
-                */
+                Reservation clickedRes = (Reservation) parent.getItemAtPosition(position);
+                if (delete) {
+                    if (clickedRes.getuserId() == FirebaseAuth.)
+                }
             }
         });
     }
