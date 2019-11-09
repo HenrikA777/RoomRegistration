@@ -101,7 +101,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:onClick="toTimePicker"
-        android:text="Select From Time"
+        android:text="Select To Time"
         app:layout_constraintStart_toEndOf="@+id/in_totime"
         app:layout_constraintTop_toBottomOf="@+id/btn_fromtime" />
 

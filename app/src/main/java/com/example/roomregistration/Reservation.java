@@ -23,7 +23,7 @@ public class Reservation implements Serializable, Comparable<Reservation> {
     @SerializedName("roomId")
     private int roomId;
 
-    private transient DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    private transient DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 
     public Reservation() {

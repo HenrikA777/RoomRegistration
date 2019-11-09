@@ -52,6 +52,7 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
         room = (Room) intent.getSerializableExtra(ROOM);
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         delfab = (FloatingActionButton)findViewById(R.id.delfab);
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             fab.hide();
             delfab.hide();
@@ -61,7 +62,7 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
         roomLabelTxtView.setText(room.toString());
         getDataUsingOkHttpEnqueue();
     }
-    private void setDelete(View v) {
+    public void setDelete(View v) {
         delete = !delete;
         if (delete) {
             delfab.setImageDrawable(ContextCompat.getDrawable(this, android.R.drawable.ic_menu_delete));
@@ -116,23 +117,29 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
         Gson gson = new GsonBuilder().create();
         Log.d("ROA", jsonString);
         Reservation[] tempReservations = gson.fromJson(jsonString, Reservation[].class);
-        ArrayList<Reservation> reservations = new ArrayList<Reservation>(Arrays.asList(tempReservations));
+        final ArrayList<Reservation> reservations = new ArrayList<Reservation>(Arrays.asList(tempReservations));
         Collections.sort(reservations, new Comparator<Reservation>() {
             public int compare(Reservation o1, Reservation o2) {
                 return o1.compareTo(o2);
             }
         });
         ListView listView = findViewById(R.id.listviewReservations);
-        ArrayAdapter<Reservation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, reservations);
+        final ArrayAdapter<Reservation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, reservations);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(RoomActivity.this, "Reservation clicked: "+parent.getItemAtPosition(position), Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(RoomActivity.this, "Reservation clicked: "+parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
                 Reservation clickedRes = (Reservation) parent.getItemAtPosition(position);
                 if (delete) {
-                    if (clickedRes.getuserId() == FirebaseAuth.)
+                    Toast.makeText(RoomActivity.this, "Checking UID", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RoomActivity.this, clickedRes.getuserId() + " : " + FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                    if (clickedRes.getuserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        Toast.makeText(RoomActivity.this, "UID matched", Toast.LENGTH_SHORT).show();
+                        deleteReservation(clickedRes);
+                        reservations.remove(position);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -142,6 +149,29 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
         intent.putExtra(ROOM, room);
         startActivity(intent);
     }
+
+    public void deleteReservation(Reservation reservation) {
+        final String url = "http://anbo-roomreservationv3.azurewebsites.net/api/reservations/" + reservation.getId();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).delete().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull final IOException ex) {
+                Toast.makeText(RoomActivity.this, "onFailure", Toast.LENGTH_SHORT).show();
+                }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull final Response response) {
+                if (response.isSuccessful()) {
+                            //Toast.makeText(RoomActivity.this, "Reservation deleted", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            //Toast.makeText(RoomActivity.this, "Deletion failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+        });
+    }
+
     // region implements gestureDetector
     @Override
     public boolean onTouchEvent(MotionEvent event) {

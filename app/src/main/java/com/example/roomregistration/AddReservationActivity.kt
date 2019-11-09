@@ -24,8 +24,8 @@ import java.util.*
 
 class AddReservationActivity : AppCompatActivity() {
     private var calendar: Calendar = Calendar.getInstance();
-    private var fromHour: Int = calendar.get(Calendar.HOUR)
-    private var toHour: Int = calendar.get(Calendar.HOUR)
+    private var fromHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
+    private var toHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
     private var fromMin: Int = calendar.get(Calendar.MINUTE)
     private var toMin: Int = calendar.get(Calendar.MINUTE)
     val BASE_URI = "http://anbo-roomreservationv3.azurewebsites.net/api/reservations/room/"
@@ -38,6 +38,12 @@ class AddReservationActivity : AppCompatActivity() {
 
         val intent = intent
         room = intent.getSerializableExtra(RoomActivity.ROOM) as Room
+
+        val myFormat = "yyyy-MM-dd" // mention the format you need
+        val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
+        in_date.text = sdf.format(calendar.time)
+        in_fromtime.text = fromHour.toString().padStart(2,'0') + " : " + fromMin.toString().padStart(2,'0');
+        in_totime.text = toHour.toString().padStart(2,'0') + " : " + toMin.toString().padStart(2,'0');
 
         fab.setOnClickListener { view ->
             saveReservation(view);
