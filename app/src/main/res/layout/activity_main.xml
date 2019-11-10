@@ -65,6 +65,7 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
         android:layout_marginTop="8dp"
+        android:imeOptions="actionDone"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"

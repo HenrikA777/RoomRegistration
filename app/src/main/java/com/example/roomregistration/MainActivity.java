@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.test.espresso.idling.CountingIdlingResource;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,8 +32,9 @@ public class MainActivity extends AppCompatActivity
         implements View.OnClickListener, GestureDetector.OnGestureListener{
     private final String TAG = "FB_SIGNIN";
     private GestureDetector gestureDetector;
+    CountingIdlingResource idlingResource = new CountingIdlingResource("mainActivityIdlingResource");
 
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     private EditText etPass;
@@ -177,6 +179,7 @@ public class MainActivity extends AppCompatActivity
         String email = etEmail.getText().toString();
         String password = etPass.getText().toString();
 
+        idlingResource.increment();
         mAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this,
                         new OnCompleteListener<AuthResult>() {
@@ -190,7 +193,7 @@ public class MainActivity extends AppCompatActivity
                                     Toast.makeText(MainActivity.this, "Sign in failed", Toast.LENGTH_SHORT)
                                             .show();
                                 }
-
+                                idlingResource.decrement();
                                 updateStatus();
                             }
                         })
@@ -206,6 +209,7 @@ public class MainActivity extends AppCompatActivity
                         else {
                             updateStatus(e.getLocalizedMessage());
                         }
+                        idlingResource.decrement();
                     }
                 });
     }
@@ -222,6 +226,7 @@ public class MainActivity extends AppCompatActivity
         String email = etEmail.getText().toString();
         String password = etPass.getText().toString();
 
+        idlingResource.increment();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this,
                         new OnCompleteListener<AuthResult>() {
@@ -234,6 +239,7 @@ public class MainActivity extends AppCompatActivity
                                     Toast.makeText(MainActivity.this, "Account creation failed", Toast.LENGTH_SHORT)
                                             .show();
                                 }
+                                idlingResource.decrement();
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -246,6 +252,7 @@ public class MainActivity extends AppCompatActivity
                         else {
                             updateStatus(e.getLocalizedMessage());
                         }
+                        idlingResource.decrement();
                     }
                 });
     }
@@ -303,4 +310,7 @@ public class MainActivity extends AppCompatActivity
 
     }
     // endregion implements gestureDetector
+    public CountingIdlingResource getIdlingResourceInTest() {
+        return idlingResource;
+    }
 }
