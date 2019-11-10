@@ -255,6 +255,12 @@ public class MainActivity extends AppCompatActivity
     }
     // region implements gestureDetector
     @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        this.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (this.gestureDetector.onTouchEvent(event)) {
             return true;
@@ -263,7 +269,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-        boolean rightSwipe = event1.getX() > event2.getX();
+        boolean rightSwipe = event1.getX() > event2.getX() + 200 && Math.abs(event1.getY()-event2.getY()) < 200;
         if (rightSwipe) {
             roomOverview();
         }

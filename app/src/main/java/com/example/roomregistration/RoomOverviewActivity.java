@@ -136,11 +136,8 @@ public class RoomOverviewActivity extends AppCompatActivity implements GestureDe
     }
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-        boolean rightSwipe = event1.getX() > event2.getX();
-        if (rightSwipe) {
-            return true;
-        }
-        else {
+        boolean leftSwipe = event1.getX() < event2.getX() + 200 && Math.abs(event1.getY()-event2.getY()) < 200;
+        if (leftSwipe) {
             Intent i = new Intent(RoomOverviewActivity.this, MainActivity.class);
             //i.putStringArrayListExtra("logArray", log);
             RoomOverviewActivity.this.startActivity(i);

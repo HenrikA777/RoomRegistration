@@ -13,19 +13,19 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".AddReservationActivity"
-            android:label="@string/title_activity_add_reservation"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_add_reservation"></activity>
         <activity android:name=".RoomActivity" />
         <activity
             android:name=".RoomOverviewActivity"
-            android:label="@string/title_activity_room_overview"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+            android:label="@string/title_activity_room_overview">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
+
         </activity>
     </application>
 
