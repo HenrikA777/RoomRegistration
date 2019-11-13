@@ -42,6 +42,7 @@ class MainActivityTest {
         onView(withId(R.id.btnSignIn)).perform(closeSoftKeyboard()).perform(click())
         check(activityRule.activity.mAuth.currentUser != null)
 
+
     }
 
     @After

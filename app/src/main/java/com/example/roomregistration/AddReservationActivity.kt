@@ -127,12 +127,15 @@ class AddReservationActivity : AppCompatActivity() {
         val fromtime = getTime(fromHour, fromMin);
         val toTime = getTime(toHour, toMin);
         val purpose = in_purpose.text.toString()
-        Toast.makeText(this, "Trying to save reservation", Toast.LENGTH_SHORT).show()
+
         if (purpose.length > 2) {
             if (fromtime < toTime) {
-                Toast.makeText(this, "Checking time is valid", Toast.LENGTH_SHORT).show()
                 checkReservationSameTime(fromtime, toTime, purpose)
             }
+            else Toast.makeText(this, "Reservation can't end before it begins", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this, "Purpose has to be atleast 2 characters", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -154,26 +157,19 @@ class AddReservationActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
                     val jsonString = response.body!!.string()
-                    runOnUiThread {
-                        Toast.makeText(this@AddReservationActivity, "Checking response", Toast.LENGTH_SHORT).show()
-                    }
                     if (populateList(jsonString)) {
-                        runOnUiThread { Toast.makeText(this@AddReservationActivity, "Posting reservation", Toast.LENGTH_SHORT).show() }
                         postReservation(fromTime, toTime, purpose)
                     }
                 } else {
                     runOnUiThread {
-                        //ToDO Exception?
-                        //TextView messageView = findViewById(R.id.main_message_textview);
-                        //messageView.setText(BASE_URI + "\n" + response.code() + " " + response.message());
+                        Toast.makeText(baseContext, response.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             override fun onFailure(call: Call, ex: IOException) {
                 runOnUiThread {
-                    //TextView messageView = findViewById(R.id.main_message_textview);
-                    //messageView.setText(ex.getMessage());
+                    Toast.makeText(baseContext, "No response from server", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -181,6 +177,9 @@ class AddReservationActivity : AppCompatActivity() {
     private fun populateList(jsonString: String): Boolean {
         val gson = GsonBuilder().create()
         Log.d("ROA", jsonString)
+        if (gson.fromJson(jsonString, Array<Reservation>::class.java).size >= 1) {
+            Toast.makeText(this, "Room is reserved at selected time", Toast.LENGTH_SHORT).show()
+        }
         return gson.fromJson(jsonString, Array<Reservation>::class.java).size < 1
     }
     private fun postReservation(fromTime: Long, toTime: Long, purpose: String) {

@@ -164,13 +164,15 @@ public class RoomActivity extends AppCompatActivity implements GestureDetector.O
                 Toast.makeText(RoomActivity.this, "Reservation clicked: "+parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
                 Reservation clickedRes = (Reservation) parent.getItemAtPosition(position);
                 if (delete) {
-                    Toast.makeText(RoomActivity.this, "Checking UID", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(RoomActivity.this, clickedRes.getuserId() + " : " + FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                     if (clickedRes.getuserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         Toast.makeText(RoomActivity.this, "UID matched", Toast.LENGTH_SHORT).show();
                         deleteReservation(clickedRes);
                         reservations.remove(position);
                         adapter.notifyDataSetChanged();
+                    }
+                    else {
+                        Toast.makeText(RoomActivity.this, "UID didn't match", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RoomActivity.this, "res: " + clickedRes.getuserId() + "\nid: " + FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
